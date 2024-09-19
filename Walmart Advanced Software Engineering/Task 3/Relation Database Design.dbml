@@ -1,0 +1,145 @@
+// Define enum type
+Enum ProductType {
+  PetFood
+  PetToy
+  PetApparel
+}
+
+// Table: Manufacturer
+Table Manufacturer {
+  id INT [pk, increment] // Primary key, auto-increment
+  name VARCHAR [not null]
+}
+
+// Table: Animal
+Table Animal {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+}
+
+// Table: Product
+Table Product {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+  manufacturer_id INT [not null]
+  product_type ProductType [not null]
+}
+
+// Table: PetFood
+Table PetFood {
+  product_id INT [pk]
+  weight FLOAT [not null]
+  flavor VARCHAR [not null]
+  target_health_condition VARCHAR [not null]
+}
+
+// Table: PetToy
+Table PetToy {
+  product_id INT [pk]
+  material VARCHAR [not null]
+  durability VARCHAR [not null]
+}
+
+// Table: PetApparel
+Table PetApparel {
+  product_id INT [pk]
+  color VARCHAR [not null]
+  size VARCHAR [not null]
+  care_instructions TEXT
+}
+
+// Table: Customer
+Table Customer {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+  email VARCHAR [not null, unique]
+}
+
+// Table: Transaction
+Table Transaction {
+  id INT [pk, increment]
+  customer_id INT [not null]
+  date DATE [not null]
+}
+
+// Table: Transaction_Product (Transaction-Product association)
+Table Transaction_Product {
+  transaction_id INT [not null]
+  product_id INT [not null]
+  quantity INT [not null, default: 1]
+  indexes {
+    (transaction_id, product_id) [pk]
+  }
+}
+
+// Table: Location
+Table Location {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+  zip_code VARCHAR [not null]
+}
+
+// Table: Shipment
+Table Shipment {
+  id INT [pk, increment]
+  origin_location_id INT [not null]
+  destination_location_id INT [not null]
+  date DATE [not null]
+}
+
+// Table: Shipment_Product (Shipment-Product association)
+Table Shipment_Product {
+  shipment_id INT [not null]
+  product_id INT [not null]
+  quantity INT [not null, default: 1]
+  indexes {
+    (shipment_id, product_id) [pk]
+  }
+}
+
+// Table: Product_Animal (Product-Animal association)
+Table Product_Animal {
+  product_id INT [not null]
+  animal_id INT [not null]
+  indexes {
+    (product_id, animal_id) [pk]
+  }
+}
+
+// Define relationships
+// One-to-many relationship between Manufacturer and Product
+Ref: Product.manufacturer_id > Manufacturer.id
+
+// One-to-one relationship between Product and PetFood
+Ref: PetFood.product_id - Product.id
+
+// One-to-one relationship between Product and PetToy
+Ref: PetToy.product_id - Product.id
+
+// One-to-one relationship between Product and PetApparel
+Ref: PetApparel.product_id - Product.id
+
+// Many-to-many relationship between Product and Animal
+Ref: Product_Animal.product_id > Product.id
+Ref: Product_Animal.animal_id > Animal.id
+
+// One-to-many relationship between Customer and Transaction
+Ref: Transaction.customer_id > Customer.id
+
+// One-to-many relationship between Transaction and Transaction_Product
+Ref: Transaction_Product.transaction_id > Transaction.id
+
+// Many-to-one relationship between Transaction_Product and Product
+Ref: Transaction_Product.product_id > Product.id
+
+// One-to-many relationship between Location and Shipment (origin)
+Ref: Shipment.origin_location_id > Location.id
+
+// One-to-many relationship between Location and Shipment (destination)
+Ref: Shipment.destination_location_id > Location.id
+
+// One-to-many relationship between Shipment and Shipment_Product
+Ref: Shipment_Product.shipment_id > Shipment.id
+
+// Many-to-one relationship between Shipment_Product and Product
+Ref: Shipment_Product.product_id > Product.id
