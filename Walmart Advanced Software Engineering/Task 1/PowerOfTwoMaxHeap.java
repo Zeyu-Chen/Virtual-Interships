@@ -157,13 +157,26 @@ public class PowerOfTwoMaxHeap {
     }
 
     /**
-     * Returns a string representation of the heap.
+     * Returns the exponent used to determine the branching factor.
+     *
+     * @return The exponent value.
+     */
+    public int getExponent() {
+        return exponent;
+    }
+
+    /**
+     * Returns a string representation of the heap, including the exponent.
      *
      * @return The heap as a string.
      */
     @Override
     public String toString() {
-        return heap.toString();
+        return "PowerOfTwoMaxHeap{" +
+                "heap=" + heap +
+                ", exponent=" + exponent +
+                ", branchingFactor=" + branchingFactor +
+                '}';
     }
 
     /**
