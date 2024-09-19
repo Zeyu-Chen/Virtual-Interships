@@ -1,0 +1,99 @@
+@startuml
+
+' Enumerations
+enum ModeIdentifier {
+    DUMP
+    PASSTHROUGH
+    VALIDATE
+}
+
+enum DatabaseIdentifier {
+    POSTGRES
+    REDIS
+    ELASTIC
+}
+
+' Datapoint class
+class Datapoint {
+    +data: String
+    +processedData: String
+}
+
+' Database Interface
+interface Database {
+    +connect()
+    +insert(datapoint: Datapoint)
+    +validate(datapoint: Datapoint)
+}
+
+' Concrete Database Implementations
+class PostgresDatabase {
+    +connect()
+    +insert(datapoint: Datapoint)
+    +validate(datapoint: Datapoint)
+}
+
+class RedisDatabase {
+    +connect()
+    +insert(datapoint: Datapoint)
+    +validate(datapoint: Datapoint)
+}
+
+class ElasticDatabase {
+    +connect()
+    +insert(datapoint: Datapoint)
+    +validate(datapoint: Datapoint)
+}
+
+' DatabaseFactory using Factory Pattern
+class DatabaseFactory {
+    +getDatabase(dbId: DatabaseIdentifier): Database
+}
+
+DatabaseFactory --> Database
+DatabaseFactory --> PostgresDatabase
+DatabaseFactory --> RedisDatabase
+DatabaseFactory --> ElasticDatabase
+
+' Mode Interface
+interface Mode {
+    +process(datapoint: Datapoint)
+}
+
+' Concrete Mode Implementations
+class DumpMode {
+    +process(datapoint: Datapoint)
+}
+
+class PassthroughMode {
+    +process(datapoint: Datapoint)
+}
+
+class ValidateMode {
+    +process(datapoint: Datapoint)
+}
+
+' DataProcessor Class
+class DataProcessor {
+    -currentMode: Mode
+    -currentDatabase: Database
+    +configure(modeId: ModeIdentifier, dbId: DatabaseIdentifier)
+    +process(datapoint: Datapoint)
+}
+
+' Relationships
+DataProcessor --> Mode
+DataProcessor --> Database
+DataProcessor --> DatabaseFactory
+DataProcessor --> ModeIdentifier
+DataProcessor --> DatabaseIdentifier
+
+Mode <|-- DumpMode
+Mode <|-- PassthroughMode
+Mode <|-- ValidateMode
+
+Database <|-- PostgresDatabase
+Database <|-- RedisDatabase
+Database <|-- ElasticDatabase
+
+@enduml
